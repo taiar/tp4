@@ -6,3 +6,5 @@ Release*
 *.h.*
 tp*
 *.swp
+src/entrada/m
+src/entrada/g
