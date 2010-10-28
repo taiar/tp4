@@ -1,24 +1,25 @@
 CC = gcc
 CFLAGS = -g -Wall -lm
-BIN = tp3
-XFLAGS1 = -a 100 -b brasilia -c 199.9 -d 9 -e .9 -f 1.9 -g heuristica
-XFLAGS2 = -a
-XFLAGS3 = -a
-XFLAGS4 = -a
-XFLAGS5 = -a
+BIN = tp4
+XFLAGSA = -i entrada/p -o p
+XFLAGSB = -i entrada/m -o m
+XFLAGSC = -i entrada/g -o g
 RM = *.o *.h.gch $(BIN)
-
-grafo: grafo.c grafo.h
-	$(CC) -c grafo.c grafo.h $(CFLAGS)
 
 io: io.c io.h
 	$(CC) -c io.c io.h $(CFLAGS)
 
-geografia: geografia.c geografia.h
-	$(CC) -c geografia.c geografia.h $(CFLAGS)
+main: io tp4.c
+	$(CC) -o $(BIN) tp4.c io.o $(CFLAGS)
 
-main: grafo io geografia tp3.c
-	$(CC) -o $(BIN) tp3.c grafo.o io.o geografia.o $(CFLAGS)
+m: clean main
+	./$(BIN) $(XFLAGSB)
+
+p: clean main
+	./$(BIN) $(XFLAGSA)
+
+g: clean main
+	./$(BIN) $(XFLAGSC)
 
 valgrind: clean all
 	valgrind ./$(BIN) $(XFLAGS1)
@@ -28,4 +29,4 @@ clean:
 	rm -rf $(RM)
 
 run: clean all
-	./$(BIN) $(XFLAGS1)
+	./$(BIN) $(XFLAGSA)
