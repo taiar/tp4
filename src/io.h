@@ -12,11 +12,9 @@
  */
 typedef struct
 {
-  int aFlag, bFlag, cFlag, dFlag, eFlag, fFlag, gFlag;
-  int totalDias, diasAway;
-  double dinheiro, precoKmCarro, precoKmAviao;
-  char *cidadeInicio, *algoritmo;
-  FILE *distancias;
+  int iFlag, oFlag;
+  char *i, *o;
+  FILE *entrada, *saida;
 } Entrada;
 
 /**
