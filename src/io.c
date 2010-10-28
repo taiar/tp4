@@ -33,7 +33,7 @@ int entradaLe(int argc, char** argv, Entrada *entrada)
   if (entrada->iFlag != 1 || entrada->oFlag != 1)
   {
     printf("Parâmetros não foram passados corretamente na linha de comando:\n");
-    printf("%s -i <arquivo de entrada> -o <arquivo de saída>", argv[0]);
+    printf("%s -i <arquivo de entrada> -o <arquivo de saída>\n", argv[0]);
     return 0;
   }
 
@@ -41,6 +41,13 @@ int entradaLe(int argc, char** argv, Entrada *entrada)
   if (!entrada->entrada)
   {
     printf("O arquivo de entrada não está correto.\n");
+    return 0;
+  }
+
+  entrada->saida = fopen(entrada->o, "w");
+  if(!entrada->saida)
+  {
+    printf("Não foi possível criar o arquivo de saída.\n");
     return 0;
   }
   return 1;

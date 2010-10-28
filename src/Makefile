@@ -1,9 +1,9 @@
 CC = gcc
 CFLAGS = -g -Wall -lm
 BIN = tp4
-XFLAGSA = -i entrada/p -o p
-XFLAGSB = -i entrada/m -o m
-XFLAGSC = -i entrada/g -o g
+XFLAGSA = -i ./entrada/p -o p
+XFLAGSB = -i ./entrada/m -o m
+XFLAGSC = -i ./entrada/g -o g
 RM = *.o *.h.gch $(BIN)
 
 io: io.c io.h
@@ -22,7 +22,7 @@ g: clean main
 	./$(BIN) $(XFLAGSC)
 
 valgrind: clean all
-	valgrind ./$(BIN) $(XFLAGS1)
+	valgrind ./$(BIN) $(XFLAGSA)
 all: main
 
 clean:
