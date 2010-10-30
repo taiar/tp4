@@ -6,3 +6,8 @@
  */
 
 #include "externo.h"
+
+void geraTemporarios(FILE *f)
+{
+
+}
