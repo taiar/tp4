@@ -4,7 +4,8 @@ BIN = tp4
 XFLAGSA = -i ./entrada/p -o p
 XFLAGSB = -i ./entrada/m -o m
 XFLAGSC = -i ./entrada/g -o g
-RM = *.o *.h.gch $(BIN)
+SAIDAS = p m g
+RM = *.o *.h.gch $(BIN) $(SAIDAS)
 
 io: io.c io.h
 	$(CC) -c io.c io.h $(CFLAGS)
