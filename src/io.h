@@ -32,9 +32,4 @@ int entradaLe(int, char**, Entrada*);
  */
 void entradaFree(Entrada*);
 
-/**
- * Verifica dados passados na entrada.
- */
-void entradaVerifica(Entrada*);
-
 #endif
