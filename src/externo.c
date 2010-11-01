@@ -49,10 +49,11 @@ int geraTemporarios(FILE *f)
       if (strcmp(ordenacao[i], "-1.") != 0) fprintf(temp, "%s\n", ordenacao[i]);
 
     fclose(temp);
-    for(i = 0; i < FLOATS_MAX_READ; i += 1)
-      free(ordenacao[i]);
-    free(ordenacao);
   }
+
+  for (i = 0; i < FLOATS_MAX_READ; i += 1)
+    free(ordenacao[i]);
+  free(ordenacao);
 
   return fileCounter;
 }
@@ -113,7 +114,7 @@ int getMinInd(double *v, int t)
       min = i;
       break;
     }
-  if(min < 0) return min;
+  if (min < 0) return min;
   for (i = min + 1; i < t; i += 1)
   {
     if ((v[i] < v[min]) && (v[i] >= 0)) min = i;
