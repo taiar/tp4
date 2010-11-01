@@ -18,5 +18,6 @@
 #define TEMP_FILE_PREFIX "temp_"
 
 int geraTemporarios(FILE*);
+void mesclaTemporarios(FILE*, int);
 
 #endif /* EXTERNO_H_ */

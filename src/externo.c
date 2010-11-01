@@ -37,6 +37,7 @@ int geraTemporarios(FILE *f)
     fileCounter += 1;
 
     // ordena
+    Heapsort(ordenacao, FLOATS_MAX_READ);
 
     //grava no arquivo temporario
     strcpy(tempFileName, "");
@@ -45,13 +46,47 @@ int geraTemporarios(FILE *f)
     strcat(tempFileName, idTempFileName);
     temp = fopen(tempFileName, "w");
     for (i = 0; i < FLOATS_MAX_READ; i += 1)
-    {
-      fprintf(temp, "%s\n", ordenacao[i]);
-    }
-
+      if (strcmp(ordenacao[i], "-1.") != 0) fprintf(temp, "%s\n", ordenacao[i]);
     fclose(temp);
 
   }
 
   return fileCounter;
 }
+
+void mesclaTemporarios(FILE *f, int t)
+{
+  int i;
+  int id;
+  FILE **temps;
+  double *floats;
+  char idTempFileName[10];
+  char tempFileName[20];
+  char buff[30];
+
+  temps = (FILE**) malloc(sizeof(FILE*) * t);
+  for (i = 0; i < t; i += 1)
+  {
+    id = i + 1;
+    sprintf(idTempFileName, "%d", id);
+    strcpy(tempFileName, "temp_");
+    strcat(tempFileName, idTempFileName);
+    temps[i] = fopen(tempFileName, "r");
+  }
+
+  floats = (double*) malloc(sizeof(double) * t);
+
+  for (i = 0; i < t; i += 1)
+  {
+    fscanf(temps[i], "%s\n", buff);
+    floats[i] = atof(buff);
+  }
+
+
+
+  for (i = 0; i < t; i += 1)
+    fclose(temps[i]);
+
+  free(floats);
+}
+
