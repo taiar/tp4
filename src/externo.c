@@ -47,8 +47,11 @@ int geraTemporarios(FILE *f)
     temp = fopen(tempFileName, "w");
     for (i = 0; i < FLOATS_MAX_READ; i += 1)
       if (strcmp(ordenacao[i], "-1.") != 0) fprintf(temp, "%s\n", ordenacao[i]);
-    fclose(temp);
 
+    fclose(temp);
+    for(i = 0; i < FLOATS_MAX_READ; i += 1)
+      free(ordenacao[i]);
+    free(ordenacao);
   }
 
   return fileCounter;
@@ -87,20 +90,17 @@ void mesclaTemporarios(FILE *f, int t)
   while (!endFlag)
   {
     minInd = getMinInd(floats, t);
-    if(minInd < 0) break;
+    if (minInd < 0) break;
     fprintf(f, "%f\n", floats[minInd]);
     fscanf(temps[minInd], "%s\n", buff);
-    if (feof(temps[minInd]))
-    {
-      floats[minInd] = -1;
-      printf("Ok!\n");
-    }
+    if (feof(temps[minInd])) floats[minInd] = -1;
     else floats[minInd] = atof(buff);
   }
 
   for (i = 0; i < t; i += 1)
     fclose(temps[i]);
 
+  free(temps);
   free(floats);
 }
 
@@ -113,6 +113,7 @@ int getMinInd(double *v, int t)
       min = i;
       break;
     }
+  if(min < 0) return min;
   for (i = min + 1; i < t; i += 1)
   {
     if ((v[i] < v[min]) && (v[i] >= 0)) min = i;
