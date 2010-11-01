@@ -9,10 +9,14 @@
 #define EXTERNO_H_
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "ordena.h"
 
-#define FLOATS_MAX_READ 1024 * 1024 * 32
+#define FLOATS_MAX_READ 1024 * 1024 // 32mb
+#define FLOATS_MAX_LENGTH 20 // tamanho maximo dos pontos flutuantes
+#define TEMP_FILE_PREFIX "temp_"
 
-void geraTemporarios(FILE*);
+int geraTemporarios(FILE*);
 
 #endif /* EXTERNO_H_ */

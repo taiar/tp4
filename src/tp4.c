@@ -10,6 +10,7 @@
 
 #include "io.h"
 #include "externo.h"
+#include "ordena.h"
 
 int main(int argc, char **argv)
 {
@@ -19,7 +20,7 @@ int main(int argc, char **argv)
   if(!entradaLe(argc, argv, &entrada))
     return EXIT_FAILURE;
 
-  printf("%d\n", FLOATS_MAX_READ);
+  geraTemporarios(entrada.entrada);
 
   entradaFree(&entrada);
 
