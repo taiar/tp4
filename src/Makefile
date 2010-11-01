@@ -5,13 +5,19 @@ XFLAGSA = -i ./entrada/p -o p
 XFLAGSB = -i ./entrada/m -o m
 XFLAGSC = -i ./entrada/g -o g
 SAIDAS = p m g
-RM = *.o *.h.gch $(BIN) $(SAIDAS)
+RM = *.o *.h.gch $(BIN) $(SAIDAS) temp_*
 
 io: io.c io.h
 	$(CC) -c io.c io.h $(CFLAGS)
 
-main: io tp4.c
-	$(CC) -o $(BIN) tp4.c io.o $(CFLAGS)
+externo: externo.c externo.h
+	$(CC) -c externo.c externo.h $(CFLAGS)
+
+ordena: ordena.c ordena.h
+	$(CC) -c ordena.c ordena.h $(CFLAGS)
+
+main: externo io ordena tp4.c
+	$(CC) -o $(BIN) tp4.c io.o ordena.o externo.o $(CFLAGS)
 
 m: clean main
 	./$(BIN) $(XFLAGSB)
@@ -22,12 +28,12 @@ p: clean main
 g: clean main
 	./$(BIN) $(XFLAGSC)
 
-valgrind: clean all
+valgrind: clean main
 	valgrind ./$(BIN) $(XFLAGSA)
 all: main
 
 clean:
 	rm -rf $(RM)
 
-run: clean all
+run: clean main
 	./$(BIN) $(XFLAGSA)
