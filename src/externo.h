@@ -20,4 +20,6 @@
 int geraTemporarios(FILE*);
 void mesclaTemporarios(FILE*, int);
 
+int getMinInd(double*, int);
+
 #endif /* EXTERNO_H_ */

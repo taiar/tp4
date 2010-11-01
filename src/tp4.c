@@ -20,7 +20,8 @@ int main(int argc, char **argv)
   if(!entradaLe(argc, argv, &entrada))
     return EXIT_FAILURE;
 
-  geraTemporarios(entrada.entrada);
+  int teste = geraTemporarios(entrada.entrada);
+  mesclaTemporarios(entrada.saida, teste);
 
   entradaFree(&entrada);
 

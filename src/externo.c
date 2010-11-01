@@ -63,6 +63,8 @@ void mesclaTemporarios(FILE *f, int t)
   char idTempFileName[10];
   char tempFileName[20];
   char buff[30];
+  int endFlag = 0;
+  int minInd = -1;
 
   temps = (FILE**) malloc(sizeof(FILE*) * t);
   for (i = 0; i < t; i += 1)
@@ -82,11 +84,39 @@ void mesclaTemporarios(FILE *f, int t)
     floats[i] = atof(buff);
   }
 
-
+  while (!endFlag)
+  {
+    minInd = getMinInd(floats, t);
+    if(minInd < 0) break;
+    fprintf(f, "%f\n", floats[minInd]);
+    fscanf(temps[minInd], "%s\n", buff);
+    if (feof(temps[minInd]))
+    {
+      floats[minInd] = -1;
+      printf("Ok!\n");
+    }
+    else floats[minInd] = atof(buff);
+  }
 
   for (i = 0; i < t; i += 1)
     fclose(temps[i]);
 
   free(floats);
+}
+
+int getMinInd(double *v, int t)
+{
+  int i, min = -2;
+  for (i = 0; i < t; i += 1)
+    if (v[i] > 0)
+    {
+      min = i;
+      break;
+    }
+  for (i = min + 1; i < t; i += 1)
+  {
+    if ((v[i] < v[min]) && (v[i] >= 0)) min = i;
+  }
+  return min;
 }
 
