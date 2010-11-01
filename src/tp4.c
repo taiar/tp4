@@ -17,11 +17,9 @@ int main(int argc, char **argv)
   Entrada entrada;
 
   entradaInit(&entrada);
-  if(!entradaLe(argc, argv, &entrada))
-    return EXIT_FAILURE;
+  if (!entradaLe(argc, argv, &entrada)) return EXIT_FAILURE;
 
-  int teste = geraTemporarios(entrada.entrada);
-  mesclaTemporarios(entrada.saida, teste);
+  intercalacaoBalanceada(entrada.entrada);
 
   entradaFree(&entrada);
 

@@ -105,6 +105,14 @@ void mesclaTemporarios(FILE *f, int t)
   free(floats);
 }
 
+void intercalacaoBalanceada(FILE *f)
+{
+  FILE *ordenado = fopen(ENTRADA_ORDENADA, "w");
+  int numArquivosTemporarios = geraTemporarios(f);
+  mesclaTemporarios(ordenado, numArquivosTemporarios);
+  fclose(ordenado);
+}
+
 int getMinInd(double *v, int t)
 {
   int i, min = -2;

@@ -16,9 +16,11 @@
 #define FLOATS_MAX_READ 1024 * 1024 // 32mb
 #define FLOATS_MAX_LENGTH 20 // tamanho maximo dos pontos flutuantes
 #define TEMP_FILE_PREFIX "temp_"
+#define ENTRADA_ORDENADA "ordenado"
 
 int geraTemporarios(FILE*);
 void mesclaTemporarios(FILE*, int);
+void intercalacaoBalanceada(FILE*);
 
 int getMinInd(double*, int);
 
