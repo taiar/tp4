@@ -49,3 +49,49 @@ void Heapsort(char **a, int n)
     strcpy(a[pai], t);
   }
 }
+
+void Particao(char **v, int e, int d, int *i, int *j)
+{
+  char x[30], w[30];
+  double a, b;
+  *i = e;
+  *j = d;
+  strcpy(x, v[(e + d) / 2]);
+  do
+  {
+    a = atof(v[*i]);
+    b = atof(x);
+    while (a < b)
+    {
+      (*i)++;
+      a = atof(v[*i]);
+    }
+    a = atof(v[*j]);
+    while (a > b)
+    {
+      (*j)--;
+      a = atof(v[*j]);
+    }
+    if (*i <= *j)
+    {
+      strcpy(w, v[*i]);
+      strcpy(v[*i], v[*j]);
+      strcpy(v[*j], w);
+      (*i)++;
+      (*j)--;
+    }
+  } while (*i <= *j);
+}
+
+void Ordena(char **v, int e, int d)
+{
+  int i, j;
+  Particao(v, e, d, &i, &j);
+  if (e < j) Ordena(v, e, j);
+  if (i < d) Ordena(v, i, d);
+}
+
+void Quicksort(char **v, int tam)
+{
+  Ordena(v, 0, tam - 1);
+}

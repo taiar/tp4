@@ -26,6 +26,7 @@ int geraTemporarios(FILE *f)
 
   while (!feof(f))
   {
+    // Lê quantidade do arquivo de entrada para memória
     for (i = 0; i < FLOATS_MAX_READ; i += 1)
       strcpy(ordenacao[i], "-1.\0");
 
@@ -34,11 +35,10 @@ int geraTemporarios(FILE *f)
       if (feof(f)) break;
       fscanf(f, "%s", ordenacao[i]);
     }
-
     fileCounter += 1;
 
-    // Ordena arquivo temporário
-    Heapsort(ordenacao, i);
+    // Dados em memória interna
+    Quicksort(ordenacao, i);
 
     // Grava arquivo temporário
     strcpy(tempFileName, "");
