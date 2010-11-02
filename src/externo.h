@@ -26,12 +26,12 @@ int geraTemporarios(FILE*);
 /*
  * Mescla os arquivos temporarios gerados em um arquivo ordenado.
  */
-void mesclaTemporarios(FILE*, int);
+unsigned long int mesclaTemporarios(FILE*, int);
 
 /*
  * Executa o método de ordenação em memória externa.
  */
-void intercalacaoBalanceada(FILE*);
+unsigned long int intercalacaoBalanceada(FILE*);
 
 /*
  * Pega o indice do elemento de menor valor um vetor de floats.

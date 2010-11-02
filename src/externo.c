@@ -32,13 +32,13 @@ int geraTemporarios(FILE *f)
     for (i = 0; i < FLOATS_MAX_READ; i += 1)
     {
       if (feof(f)) break;
-      fscanf(f, "%s\n", ordenacao[i]);
+      fscanf(f, "%s", ordenacao[i]);
     }
 
     fileCounter += 1;
 
     // Ordena arquivo temporário
-    Heapsort(ordenacao, FLOATS_MAX_READ);
+    Heapsort(ordenacao, i);
 
     // Grava arquivo temporário
     strcpy(tempFileName, "");
@@ -59,7 +59,7 @@ int geraTemporarios(FILE *f)
   return fileCounter;
 }
 
-void mesclaTemporarios(FILE *f, int t)
+unsigned long int mesclaTemporarios(FILE *f, int t)
 {
   int i;
   int id;
@@ -70,6 +70,7 @@ void mesclaTemporarios(FILE *f, int t)
   char buff[30];
   int endFlag = 0;
   int minInd = -1;
+  unsigned long int counter = 0;
 
   // Cria vetor de arquivos temporários
   temps = (FILE**) malloc(sizeof(FILE*) * t);
@@ -86,7 +87,7 @@ void mesclaTemporarios(FILE *f, int t)
 
   for (i = 0; i < t; i += 1)
   {
-    fscanf(temps[i], "%s\n", buff);
+    fscanf(temps[i], "%s", buff);
     floats[i] = atof(buff);
   }
 
@@ -96,7 +97,8 @@ void mesclaTemporarios(FILE *f, int t)
     minInd = getMinInd(floats, t);
     if (minInd < 0) break;
     fprintf(f, "%f\n", floats[minInd]);
-    fscanf(temps[minInd], "%s\n", buff);
+    fscanf(temps[minInd], "%s", buff);
+    counter += 1;
     if (feof(temps[minInd])) floats[minInd] = -1;
     else floats[minInd] = atof(buff);
   }
@@ -106,14 +108,17 @@ void mesclaTemporarios(FILE *f, int t)
 
   free(temps);
   free(floats);
+
+  return counter;
 }
 
-void intercalacaoBalanceada(FILE *f)
+unsigned long int intercalacaoBalanceada(FILE *f)
 {
   FILE *ordenado = fopen(ENTRADA_ORDENADA, "w");
   int numArquivosTemporarios = geraTemporarios(f);
-  mesclaTemporarios(ordenado, numArquivosTemporarios);
+  unsigned long int counter = mesclaTemporarios(ordenado, numArquivosTemporarios);
   fclose(ordenado);
+  return counter;
 }
 
 int getMinInd(double *v, int t)

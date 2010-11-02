@@ -9,6 +9,7 @@
 #define ORDENA_H_
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 
 void Heapsort(char**, int);

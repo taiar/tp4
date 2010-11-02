@@ -4,6 +4,7 @@ BIN = tp4
 XFLAGSA = -i ./entrada/p -o p
 XFLAGSB = -i ./entrada/m -o m
 XFLAGSC = -i ./entrada/g -o g
+XFLAGSD = -i ./entrada/pp -o pp
 SAIDAS = p m g
 RM = *.o *.h.gch $(BIN) $(SAIDAS) temp_*
 
@@ -24,6 +25,9 @@ m: clean main
 
 p: clean main
 	./$(BIN) $(XFLAGSA)
+	
+pp: clean main
+	./$(BIN) $(XFLAGSD)
 
 g: clean main
 	./$(BIN) $(XFLAGSC)

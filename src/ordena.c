@@ -9,8 +9,10 @@
 
 void Heapsort(char **a, int n)
 {
+  n -= 1;
   int i = n / 2, pai, filho;
   char t[30];
+  float tmp1, tmp2;
 
   for (;;)
   {
@@ -32,8 +34,11 @@ void Heapsort(char **a, int n)
 
     while (filho < n)
     {
-      if ((filho + 1 < n) && (strcmp(a[filho + 1], a[filho]) > 0)) filho++;
-      if (strcmp(a[filho], t) > 0)
+      tmp1 = atof(a[filho]);
+      tmp2 = atof(a[filho + 1]);
+      if ((filho + 1 < n) && (tmp2 > tmp1)) filho++;
+      tmp2 = atof(t);
+      if (tmp1 > tmp2)
       {
         strcpy(a[pai], a[filho]);
         pai = filho;
