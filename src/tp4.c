@@ -55,7 +55,7 @@ int main(int argc, char **argv)
       fprintf(entrada.saida, "%f ", current);
 
       //Append Y
-      fprintf(entrada.saida, "%10.15f", 1.);
+      fprintf(entrada.saida, "%10.5f", 1.);
     }
     else
     {
@@ -68,7 +68,7 @@ int main(int argc, char **argv)
         fprintf(entrada.saida, "%f ", current);
 
         //Append Y
-        fprintf(entrada.saida, "%10.15f\n", prob);
+        fprintf(entrada.saida, "%10.5f\n", prob);
       }
     }
     count += 1;
