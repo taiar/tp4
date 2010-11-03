@@ -57,20 +57,18 @@ $F(x) = P(X =< x)$
 Isso significa que, dado um número qualquer $X$ a CDF indica a probabilidade dos
 outros valores $X$ serem menores ou iguais a $x$.
 
-O algoritmo utilizado nesse trabalho para calcular a CDF de um conjunto de números em ponto flutuante é:
+O algoritmo utilizado nesse trabalho para calcular a CDF de um conjunto de
+números em ponto flutuante é descrito em \ref{alg:cdf}
 
 \begin{algorithm}[h!]
+\label{alg:cdf}
 \begin{footnotesize}
-
 $D \longleftarrow $ conjunto muito grande de números (floats)\;
-
 \tcp{Esta é a função mais importante deste trabalho.}
 \textbf{ORDENA}$(D)$\; 
-
 $count \longleftarrow$ 0\;
 $current \longleftarrow$ $D[0]$\;
 $len \longleftarrow$ TAMANHO$(D)$\;
-
 \ForEach{$n \in D$}{
   \If{$n \neq current$}{
     $current \longleftarrow n$\;
@@ -81,11 +79,14 @@ $len \longleftarrow$ TAMANHO$(D)$\;
 }
 $n \longleftarrow D[len - 1]$\;
 ESCREVE$(n, 1)$\;
-
 \caption{Cálculo da CDF}
 \end{footnotesize}
 \end{algorithm}
 
+O algoritmo de cálculo da CDF é bem simples, porém, como o volume de dados a ser
+fornecido para ele é grande o suficiente para não caber na memória interna do
+computador, isso faz com que o passo de ordenação dos dados se torne algo mais
+complicado (necessita de ser ordenado na memória externa).
 
 \section{Solução Proposta}
 \label{solucao_proposta}
@@ -98,25 +99,6 @@ falar sobre a representacao por grafos.
 \subsection{Heurística}
 A heurística utilizada neste trabalho é baseada em uma heurística clássica da literatura
 conhecida como \textbf{Heurística do Vizinho Mais Próximo}. Esta, funciona assim:
-
-\begin{algorithm}[h!]
-\begin{footnotesize}
-  $G \longleftarrow $ grafo que contém as distâncias rodoviárias e aéreas entre todas as 
-  capitais do Brasil\;
-  $c \longleftarrow $ lista de cidades não visitadas\;
-  $p \longleftarrow $ percurso gerado pela heurística\;
-  $CidadeAtual \longleftarrow $ cidade em que o percurso vai começar\;
-  $p_{1} \longleftarrow CidadeAtual$\;
-  \ForEach{$c$ não visitada em $G$}{
-    \If{Distância de $c_{i}$ para $CidadeAtual$ é a menor de todas as não visitadas}{
-      $CidadeAtual \longleftarrow c_{i}$\;
-      $p \longleftarrow CidadeAtual$\;
-    }
-  }
-  \Return{$p$}
-\caption{Heurística do Vizinho Mais Próximo}
-\end{footnotesize}
-\end{algorithm}
 
 É um algoritmo guloso que itera fazendo as melhores escolhas locais, ou seja:
 pega sempre a menor distância entre a cidade atual e uma cidade do conjunto de cidades ainda
@@ -131,44 +113,6 @@ Introdução. Os passos são os seguintes:
   
   %acabar de descrever e fazer este algoritmo
 \end{itemize}
-
-% algoritmo da heuristica:
-% modificacao na heuristica do vizinho mais proximo
-% 1 - esta na cidade inicial e escolhe qual a proxima baseada na distancia de carro
-% 2 - procede da forma 1 ate o tempo limite para ir para alguma regiao ser alcançado
-% 3 - com o limite alcancado, escolhe qual a menor distancia da regiao deve ir de carro
-% 4 - procede dessa forma ate que o caminho inteiro seja percorrido de carro
-% 5 - se os dias foram suficientes para que o caminho fosse feito de carro entao esse deve ser escolhido
-% 6 - se nao for, substituir as menores distancias de carro por distancias de aviao
-% 7 - seguir dessa forma ate que o numero de dias seja alcancado
-% 8 - e se o dinheiro nao for o suficiente?
-% --------------> isso significa que a heuristica nao funcionou para esta instancia por que 
-% --------------> o caminho escolhido nao foi pequeno o suficiente. ou ainda, que o caminho nunca poderia
-% --------------> ser completado com o dinheiro disponivel nos dias disponiveis 
-
-\begin{algorithm}[h!]
-\begin{footnotesize}
-  \ForEach{Documento}{
-    \ForEach{termo válido}{
-      \If{o termo já apareceu em algum texto}{
-        \If{o termo já apareceu neste texto}{
-          incrementa o contador de ocorrências correspondente ao termo no texto;\
-        }
-        \Else{
-          insere o texto na lista e contabiliza o contador de ocorrências para
-          este termo;\
-        }
-      }
-      \Else{
-        insere o nó referente ao termo, insere o texto na lista e contabiliza o
-        contador de ocorrências para este termo;\
-      }0.000012 0.000000
-
-    }
-  }
-\caption{Leitura do índice}
-\end{footnotesize}
-\end{algorithm}
 
 Em uma aplicação real, muitos passos podem ser feitos para determinar
 efetivamente o que é e o que não é um termo relevante e, dessa forma, poupar
