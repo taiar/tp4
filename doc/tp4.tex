@@ -1,0 +1,449 @@
+\documentclass[12pt]{article}
+\usepackage{sbc-template}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{subfigure}
+\usepackage{times,amsmath,epsfig}
+\usepackage{graphicx,url}
+  \makeatletter
+  \newif\if@restonecol
+  \makeatother
+  \let\algorithm\relax
+  \let\endalgorithm\relax
+\usepackage[lined,algonl,ruled]{algorithm2e}
+\usepackage{multirow}
+\usepackage[brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[pdftex]{hyperref}
+
+\sloppy
+
+\title{Algoritmos e Estruturas de Dados 3 \\ Trabalho Prático 4 \\
+\huge{CDFs! \\ Ordenação em memória externa}}
+\date{November 22, 1963}
+
+
+\author{André Taiar Marinho Oliveira}
+
+
+\address{Departamento de Ciência da Computação -- Universidade Federal de Minas Gerais (UFMG)
+\email{taiar@dcc.ufmg.br}
+\\
+\\ Novembro de 2010
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{resumo}
+Muitas aplicações em computação necessitam trabalhar com volumes de dados maiores do que
+o que a memória principal (ou memória interna) das máquinas suporta. Tais aplicações precisam
+fazer uso dos discos dos computadores que fornecem uma quantidade de espaço ordens de grandeza 
+maior e suportam o volume de dados a ser computado, pagando para isso o preço da eficiência (dados 
+em disco demoram ordens de grandeza de tempo a mais para serem acessados do que em memória interna).
+Neste trabalho aplicaremos um método de ordenação em memória secundária para resolver o problema
+das CDFs (\textit{Cumulative Distribution Function}) com um volume extenso de dados.
+\end{resumo}
+
+\section{Introdução}
+
+Em todas as ciências que o homem estuda existem problemas considerados insolúveis 
+ou intratáveis; problemas que, pelo menos com o conhecimento do qual dispomos hoje 
+em dia, não conseguimos resolver. A ciência da computação não foge à essa regra e, 
+portanto, existem problemas computacionais cuja solução eficiente é desconhecida.
+Tais problemas são abordados por algoritmos de ordem de complexidade exponencial e,
+por sua própria natureza, não podem ser computados em um tempo prático para instâncias
+relevantes de problemas. O nome que damos à essa classe de problemas é NP (\textit{Not 
+Polynomial}). Para estes problemas podemos obter soluções em tempo polinomial que nem
+sempre serão ótimas (apesar de conter qualidade prática) utilizando heurísticas. 
+
+Heurísticas são modificações no tratamento do problema, de forma a produzir algoritmos 
+polinomiais para problemas exponenciais a custo de otimalidade. Isso significa que um 
+algoritmo heurístico pode não produzir uma solução ótima, na verdade, uma solução 
+heurística pode nem mesmo produzir uma solução. O que se faz é assumir certos riscos 
+e fazer a computação ignorando-se o espaço de soluções que consideramos dispensável. 
+Uma estratégia tipicamente heurística é a usada em algoritmos gulosos: ao invés de se 
+verificar a otimalidade completa da solução, busca-se uma otimalidade local na esperança 
+de que ela constitua parte da solução ótima global, ou pelo menos não se distancie da 
+mesma.
+
+O problema que iremos trabalhar no desenvolvimento do trabalho é uma variação de um
+problema clássico em computação; o \textbf{problema do caixeiro-viajante} (ou 
+\textbf{\textit{PCV}}): um caixeiro-viajante deseja visitar $n$ cidades de tal forma 
+que a sua viagem inicie e termine na mesma cidade, e cada cidade deve ser visitada uma 
+única vez. Supondo que sempre exista uma estrada entre duas cidades quaisquer, o problema 
+é encontrar a menor rota que o caixeiro-visitada possa utilizar na sua viagem. Esse 
+problema se enquadra na categoria \textit{NP-Difícil}, isso significa que ele é pelo 
+menos tão difícil quanto os problemas mais difíceis em \textit{NP}. 
+
+No problema abordado no trabalho, candidatos à presidência do Brasil devem viajar
+por todas as capitais dos estados do país passando por cada uma dessas cidadedes uma
+única vez. Abordado dessa forma o problema é uma instância simples do PCV. Porém, 
+algumas restrições foram impostas:
+
+\begin{itemize}
+  \item eles têm a opção de viajar pelas capitais de carro ou avião (e ambos têm 
+  distâncias e custos diferentes);
+  \item eles têm dinheiro limitado para completar a viagem;
+  \item eles têm uma quantidade de dias máximo para completar a viagem (o tempo de 
+  deslocamento deve ser levado em conta);
+  \item eles não podem ficar mais do que uma quantidade arbitrária de dias sem 
+  visitar alguma região do Brasil (Norte, Nordeste, Centro-oeste, Sudeste e Sul).
+\end{itemize}
+
+Deve ser calculada a solução ótima do problema e uma solução aproximada por meio de
+uma heurística. Como se trata de um problema pertencente à classe \textit{NP}, a solução
+ótima não pode ser calculada em tempo polinomial (o único meio de obtê-la é exautivamente) 
+e, por isso, teremos que calcular a solução ótima para uma entrada menor do que a 
+especificada (diminuindo o número de cidades a serem visitadas) com o intuito de obter 
+um resultado para avaliação.
+
+\section{Solução Proposta}
+\label{solucao_proposta}
+
+falar sobre a representacao por grafos.
+
+\subsection{Solução Ótima}
+
+
+\subsection{Heurística}
+A heurística utilizada neste trabalho é baseada em uma heurística clássica da literatura
+conhecida como \textbf{Heurística do Vizinho Mais Próximo}. Esta, funciona assim:
+
+\begin{algorithm}[h!]
+\begin{footnotesize}
+  $G \longleftarrow $ grafo que contém as distâncias rodoviárias e aéreas entre todas as 
+  capitais do Brasil\;
+  $c \longleftarrow $ lista de cidades não visitadas\;
+  $p \longleftarrow $ percurso gerado pela heurística\;
+  $CidadeAtual \longleftarrow $ cidade em que o percurso vai começar\;
+  $p_{1} \longleftarrow CidadeAtual$\;
+  \ForEach{$c$ não visitada em $G$}{
+    \If{Distância de $c_{i}$ para $CidadeAtual$ é a menor de todas as não visitadas}{
+      $CidadeAtual \longleftarrow c_{i}$\;
+      $p \longleftarrow CidadeAtual$\;
+    }
+  }
+  \Return{$p$}
+\caption{Heurística do Vizinho Mais Próximo}
+\end{footnotesize}
+\end{algorithm}
+
+É um algoritmo guloso que itera fazendo as melhores escolhas locais, ou seja:
+pega sempre a menor distância entre a cidade atual e uma cidade do conjunto de cidades ainda
+não visitadas disponíveis, até completar o percurso. Ela serve para resolver o PCV simples. 
+Utilizamos uma adaptação da heurística do vizinho mais próximo para resolver o nosso problema.
+Os dados fornecidos são os mesmo do problema anterior acrescidos das restrições já discutidas na 
+Introdução. Os passos são os seguintes:
+
+\begin{itemize}
+  \item À partir da cidade inicial/atual, verificar se existe alguma região que tem necessidade
+  de ser visitada
+  
+  %acabar de descrever e fazer este algoritmo
+\end{itemize}
+
+% algoritmo da heuristica:
+% modificacao na heuristica do vizinho mais proximo
+% 1 - esta na cidade inicial e escolhe qual a proxima baseada na distancia de carro
+% 2 - procede da forma 1 ate o tempo limite para ir para alguma regiao ser alcançado
+% 3 - com o limite alcancado, escolhe qual a menor distancia da regiao deve ir de carro
+% 4 - procede dessa forma ate que o caminho inteiro seja percorrido de carro
+% 5 - se os dias foram suficientes para que o caminho fosse feito de carro entao esse deve ser escolhido
+% 6 - se nao for, substituir as menores distancias de carro por distancias de aviao
+% 7 - seguir dessa forma ate que o numero de dias seja alcancado
+% 8 - e se o dinheiro nao for o suficiente?
+% --------------> isso significa que a heuristica nao funcionou para esta instancia por que 
+% --------------> o caminho escolhido nao foi pequeno o suficiente. ou ainda, que o caminho nunca poderia
+% --------------> ser completado com o dinheiro disponivel nos dias disponiveis 
+
+\begin{algorithm}[h!]
+\begin{footnotesize}
+  \ForEach{Documento}{
+    \ForEach{termo válido}{
+      \If{o termo já apareceu em algum texto}{
+        \If{o termo já apareceu neste texto}{
+          incrementa o contador de ocorrências correspondente ao termo no texto;\
+        }
+        \Else{
+          insere o texto na lista e contabiliza o contador de ocorrências para
+          este termo;\
+        }
+      }
+      \Else{
+        insere o nó referente ao termo, insere o texto na lista e contabiliza o
+        contador de ocorrências para este termo;\
+      }0.000012 0.000000
+
+    }
+  }
+\caption{Leitura do índice}
+\end{footnotesize}
+\end{algorithm}
+
+Em uma aplicação real, muitos passos podem ser feitos para determinar
+efetivamente o que é e o que não é um termo relevante e, dessa forma, poupar
+processamento e espaço em processos de indexação. Alguns desses passos
+correspondem à análise de Stop Words \footnote{Stop Words são palavras consideradas sem valor
+semântico para a análise de tópico de um texto (como artigos e preposições, por
+xemplo). \href{http://searchenginewatch.com/2156061}{Referência}.}, remoção de
+prefixos e sufixos das palavras \footnote{É um processo que simplifica as
+palavras removendo seu prefixo e sufixo (caso tenha) e dessa forma reconhece o
+padrão de formação daquela palavra.}, reconhecimento sintático, entre outras. 
+Em nosso sistema, a única análise feita é quanto ao número de caracteres que a 
+palavra contém. Para uma aplicação padrão da indexação, utilizei o mínimo de 3 
+caracteres por palavra (parâmetro que será variado nas avaliações experimenais).
+
+Após indexar todos os textos, conseguimos obter vários parâmetros úteis para
+expressar a relevância das palavras-chave neste contexto. O primeiro aspecto a ser
+levado em consideração é o número de ocorrências de uma palavra. Como sugerido
+na especificação, assumi que, para um termo ser considerado relevante ele
+deveria aparecer na minoria dos textos apresentados (aparecer em menos de 50\%
+dos textos) aumentando o índice de discriminação que ele potencialmente tem.
+Esse parâmetro foi colocado (assim como o tamanho mínimo dos termos) de forma a
+ser facilmente modificado para obtermos melhores análises experimentais.
+
+Após termos uma referência sobre quais palavras serão potencialmente relevantes
+para analisarmos as semelhanças entre os textos, podemos reconstruir novamente
+um índice. Dessa vez, eu analiso cada texto e incorporo ao seu índice apenas as
+palavras relevantes, colocando cada índice em um vetor que terá o índice de um texto 
+em cada posição.
+
+Com estes elementos calculados podemos partir para a finalização do trabalho.
+Para retornar as palavras chaves de cada texto, basta percorrer o índice
+individual de cada texto. Porém, como as palavras chaves precisam ser retornadas
+devemos primeiramente ordená-las de acordo com as suas ocorrências naquele
+texto. Para isso, lemos o índice e armazenamos os termos e suas ocorrências um
+um vetor que será posteriormente ordenado decrescentemente, obtendo dessa forma
+as palavras-chave de um texto ordenadas por sua relevância.
+
+O segundo item a ser retornado pelo programa é um arquivo contendo a lista dos
+textos analisados se os texos mais semelhantes à ele. O número de textos a ser
+retornado é arbitrário. Nas execuções do trabalho, retornamos quantidades de 5 a
+8 indicações de textos.
+
+\begin{algorithm}[h!]
+\begin{footnotesize}
+  \ForEach{Documento}{ 
+    $PalavrasChave \longleftarrow$ recebe as palavras-chave do Documento e o seu
+    número de ocorrências naquele texto\;
+    $OrdenaOcorrenciaDecrescente(PalavrasChave)$\;
+    \textbf{Imprime} lista de palavras-chave\;
+    \ForEach{palavras-chave do Documento}{
+      $Ocorrencias \longleftarrow$ vetor de textos e numero de ocorrencias 
+      da palavra-chave por texto\;
+      \ForEach{Documento em que a palavra-chave ocorreu}{
+        $PotencialDeSemelhanca[Documento de Ocorrencia] + \longleftarrow$
+        ocorrencias da palavra-chave no Documento de Ocorrencia\;
+      }
+    }
+    $OrdenaPotenciaDecrescente(PotencialDeSemelhanca)$\;
+    \textbf{Imprime} lista de $\textbf{N}$ Documentos mais similares\;
+  }
+\caption{Identificação de textos semelhantes}
+\end{footnotesize}
+\end{algorithm}
+
+Encerrada a explicação sobre os principais algoritmos e as estruturas de dados
+utilizados, e como eles se combinaram na solução do problema, segue abaixo uma
+breve análise sobre a análise de complexidade dos principais algoritmos e mais
+alguma explicação sobre as estruturas que eventualmente tenha faltado acima.
+
+\subsection{Análise da solução}
+
+\subsubsection{Ordenação}
+O algoritmo de ordenação utilizado foi o Quicksort que tem ordem de complexidade
+$n(\log(n))$ para casos médios.
+
+\subsubsection{Dicionário}
+Armazena cada termo, o documento em que ocorreu e quantas
+vezes ocorreu naquele documento. O Dicionário foi organizado como uma árvore 
+binária de pesquisa em que cada termos e suas ocorrências estão em um nó da 
+árvore. Dessa forma, cada nó ainda conta com 2 ponteiros (um que aponta para 
+a sub-árvore da direita e um que aponta para a sub-árvore da direita).
+
+\begin{algorithm}[h!]
+\begin{footnotesize}
+	termo\;
+	lista de ocorrencias\;
+\caption{Nó da Árvore}
+\end{footnotesize}
+\end{algorithm}
+
+\begin{table}[ht]
+  \caption{Análise de Complexidade do Dicionário}
+  \centering
+  \begin{footnotesize}
+  \begin{tabular}{c c}
+  \hline\hline
+  Operação & Custo (casos médios) \\
+  \hline
+  Inserção na Árvore & $O(\log(n))$ \\
+  Pesquisa na Árvore & $O(\log(n))$ \\
+  Caminhamento na Árvore & $O(n)$ \\
+  \hline
+  \end{tabular}
+  \end{footnotesize}
+\end{table}
+
+\subsubsection{Lista de Ocorrências}
+
+Precisamos de uma lista de ocorrências para guardar todas as ocorrências que
+variavam por termo e documentos. Cada nó do dicionário contém uma lista de
+ocorrências.
+
+\begin{algorithm}[h!]
+\begin{footnotesize}
+	identificador do documento\;
+	ocorrências no documento\;
+\caption{Item da lista}
+\end{footnotesize}
+\end{algorithm}
+
+As operações em lista são sempre $O(n)$ para o pior caso.
+
+\section{Código}
+
+\subsection{Módulos}
+O programa foi separado em quatro módulos:
+\begin{itemize}
+\item \textbf{Grafo:} contém todas as operações executadas sobre a 
+estrutura de dados Grafo, que foi utilizada para armazenamento e cálculo
+das distâncias entre as cidades.
+\item \textbf{Entrada e Saída:} controla a leitura do arquivo de distâncias
+e a escrita do resultado do programa na saída padrão. Também faz a validação dos 
+argumentos de entrada pela linha de comando.
+\item \textbf{Geografia:} contém dados como nomes das cidades (para sua identificação
+e armazenamento de seu identificador único), descrição das regiões do brasil
+segundo as capitais de seus estados e algumas operações sobre esses dados geográficos.
+\item \textbf{Principal:} interagiu com todos os outros módulos retornando erro
+quando alguma irregularidade era colocada, controlou o fluxo de execução do
+programa.
+\end{itemize}
+
+\subsection{Entrada e saída}
+Para não haver problemas com a leitura da linha de comando, foi utilizado um utilitário do
+sistema Linux chamado \textbf{getopt} que permite uma leitura mais robusta dos argumentos
+passados ao programa. O comando para execução do programa definido para a linha de entrada 
+foi:
+\begin{verbatim}
+#: ./tp3 -a <A> -b <B> -c <C> -d <D> -e <E> -f <F> -g <G> 
+\end{verbatim}
+Sendo: 
+\begin{itemize}
+  \item \textbf{A} - Quantidade total de dias de viagem;
+  \item \textbf{B} - Cidade em que a viagem começa (e consequentemente aonde deve terminar);
+  \item \textbf{C} - Dinheiro disponível para o gasto com esta viagem;
+  \item \textbf{D} - Quantidade máxima de dias que um candidato pode ficar sem visitar alguma
+  região geográfica do Brasil.
+  \item \textbf{E} - Preço por Km para viajar de Carro;
+  \item \textbf{F} - Preço por Km para viajar de Avião; 
+  \item \textbf{G} - Algoritmo a ser exevutado: solução ótima (\textit{otima}) ou a 
+  heurística (\textit{heuristica}).
+\end{itemize}
+
+% falar sobre o arquivo de distancias
+O arquivo de distâncias especifica a distância em Km entre cada uma das capitais brasileiras
+no seguinte formato:
+\begin{verbatim}
+...
+<A> <B> <C> <D>
+...
+\end{verbatim}
+Sendo:
+\begin{itemize}
+  \item \textbf{A} - nome da cidade A;
+  \item \textbf{B} - nome da cidade B; 
+  \item \textbf{C} - distância rodoviária entre a cidade A a cidade B;
+  \item \textbf{D} - distância aérea entre a cidade A e a cidade B. 
+\end{itemize}
+
+% falar sobre o formato da saida
+A saída do programa é retornada na saída padrão do sistema no seguinte formato:
+\begin{verbatim}
+...
+<A> <B> <C>
+...
+\end{verbatim}
+Sendo:
+\begin{itemize}
+  \item \textbf{A} - número do dia em que o candidato chegou à cidade;
+  \item \textbf{B} - nome da cidade em que o candidato chegou; 
+  \item \textbf{C} - meio de transporte utilizado pelo candidato para ir até a próxima cidade.
+\end{itemize}
+
+\subsection{Compilação}
+O compilador utilizado neste trabalho foi o GCC (adotado como padrão para a disciplina) e 
+o comando para compilar o programa através do GCC é:
+\begin{verbatim}
+  #: gcc -o tp3 tp3.c io.c io.h geografia.c geografia.h grafo.c grafo.h
+\end{verbatim}
+caso estejam todos os arquivos dentro do mesmo diretório.
+
+Como pedido na especificação, foi feito um arquivo Makefile com o qual é possível compilar
+o programa com o comando: 
+\begin{verbatim}
+  #: make all
+\end{verbatim}
+
+E podemos compilar e executar o programa com o comando:
+\begin{verbatim}
+  #: make run
+\end{verbatim}
+que fará, além da compilação, com que o programa execute com uma entrada arbitrária.
+
+\section{Avaliação Experimental}
+\label{avaliacao_experimental}
+
+O que pudemos avaliar experimentalmente com a execução do programa é que apesar de ter 
+encontrado bem as palavras-chave de cada texto (os termos considerados foram realmente 
+relevantes), o algoritmo para clusterizar os textos não foi tão eficiente assim.
+
+Aparentemente, textos com muitas palavras foram considerados muito mais que outros textos 
+menores. Esta falha provavelmente se encontra no algoritmo do cálculo do potencial de 
+semelhança entre os textos, descrito em alto-nível no algoritmo 2. Em uma próxima versão 
+será interessante normalizar matemáticamente essa contagem para evitar esse tipo de 
+discrepância de resultados.
+
+Como não fiz medições do tempo de execução do programa para diversas entradas, a avaliação
+da velocidade do programa para diferentes entradas será omitida.
+
+\section{Conclusão}
+\label{conclusao}
+
+Neste trabalho construímos um sistema que permite separar por critérios de similaridade
+(clusterizar) um conjunto de textos arbitrário através da identificação de 
+tópicos/palavras-chave desse texto.
+
+O trabalho conseguiu cumprir o propósito de praticar a linguagem C e o estudo de um 
+problema mais complexo do que o de costume. A utilização massiva de estruturas de pesquisa
+foi uma novidade. Uma decisão extremamente importante para o trabalho foi a de utilizarmos 
+uma estrutura em forma de árvore binária ao invés de outras que poderíamos utilizar como,
+por exemplo, tabelas hash o que provavelmente fez o programa executar com uma velocidade 
+maior e gastando uma quantidade menor de espaço em memória.
+
+A análise da variação da qualidade da similaridade avaliada pelo programa é uma avaliação 
+subjetiva pois depende da leitura e interpretação dos textos retornados por parte de uma
+pessoa (melhor avaliadora de similaridade de conteúdo possível). Porém, ao analisarmos a 
+ocorrência de palavras chaves vemos que o sistema encontrou palavras que tinham realmente 
+a ver com o conteúdo daquele texto e que não eram tão decorrentes assim nos outros (tinham 
+certo caráter discriminativo entre os textos analisados).
+
+Algumas melhorias que poderiam ser consideradas neste trabalho são:
+\begin{itemize}
+\item Um melhor tratamento dos textos de entrada (eliminando acentuação e outros 
+caracteres inválidos dentro do programa);
+\item Utilização de Stop Words, retirada de prefixo e sufixo e outros tipos de técnicas
+aplicadas em recuperação de informação com o objetivo de maximizarmos o aproveitamento dos
+termos contidos no índice;
+\item Uma melhor análise de complexidade de espaço e tempo de execução do programa, talvez
+a utilização de uma outra estrutura de dados para o índice seja mais eficiente em termos 
+de execução;
+\item Uma modelagem mais complexa da análise de frequência das ocorrências de termos 
+relevantes nos documentos analisados;
+\item Uma modelagem mais complexa do cálculo de similaridade entre os textos a partir de 
+suas/seus palavras-chave/tópicos.
+\end{itemize}
+
+\end{document}
