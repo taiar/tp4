@@ -247,28 +247,59 @@ que fará, além da compilação, com que o programa execute com uma entrada peq
 \section{Avaliação Experimental}
 \label{avaliacao_experimental}
 
+Avaliamos experimentalmente os tempos de execução do programa variando o tamanho da entrada
+de arquivos relativamente pequenos até valores que geralmente não cabem nas memórias internas 
+dos computadores atuais. Todos os testes foram executados na máquina \textit{fourrier} na rede 
+do DCC. Os resultados para os tempos de execução são mostrados na tabela \ref{tempossss} (tamanhos em megabytes 
+e tempo em segundos):
 
+\begin{table}[htb]
+\centering
+\caption{Tabela com os tempos de execução}
+\label{tempossss}
+\begin{tabular}{|c|c|c|c|}
+\hline Tamanhos & Execução & Usuário & Sistema \\ 
+\hline 10 & 4,26054320
+ & 4,20000000
+ & 0,05000000
+ \\ 
+\hline 50 & 20,93500840
+ & 20,78199980
+ & 0,14800000
+ \\ 
+\hline 100 & 41,11264280
+ & 40,77800000
+ & 0,28600000
+ \\ 
+\hline 500 & 205,77360860
+ & 204,39200120
+ & 1,17200000
+ \\ 
+\hline 1024 & 426,76674180
+ & 423,85399780
+ & 2,47200000
+ \\ 
+\hline 2048 & 876,34096680
+ & 871,16400160
+ & 4,60400000
+ \\ 
+\hline
+\end{tabular} 
+\end{table}
 
-\section{Conclusão}
+Os valores da tabela foram plotados na figura 1.
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=3.5in,height=2.8in]{avali.png}
+\label{img:resss}
+\caption{Gráfico dos tempos de execução}
+\end{figure}
+
+\section{Conclusões}
 \label{conclusao}
 
-Neste trabalho construímos um sistema que permite separar por critérios de similaridade
-(clusterizar) um conjunto de textos arbitrário através da identificação de 
-tópicos/palavras-chave desse texto.
 
-O trabalho conseguiu cumprir o propósito de praticar a linguagem C e o estudo de um 
-problema mais complexo do que o de costume. A utilização massiva de estruturas de pesquisa
-foi uma novidade. Uma decisão extremamente importante para o trabalho foi a de utilizarmos 
-uma estrutura em forma de árvore binária ao invés de outras que poderíamos utilizar como,
-por exemplo, tabelas hash o que provavelmente fez o programa executar com uma velocidade 
-maior e gastando uma quantidade menor de espaço em memória.
-
-A análise da variação da qualidade da similaridade avaliada pelo programa é uma avaliação 
-subjetiva pois depende da leitura e interpretação dos textos retornados por parte de uma
-pessoa (melhor avaliadora de similaridade de conteúdo possível). Porém, ao analisarmos a 
-ocorrência de palavras chaves vemos que o sistema encontrou palavras que tinham realmente 
-a ver com o conteúdo daquele texto e que não eram tão decorrentes assim nos outros (tinham 
-certo caráter discriminativo entre os textos analisados).
 
 Algumas melhorias que poderiam ser consideradas neste trabalho são:
 \begin{itemize}
@@ -276,6 +307,7 @@ Algumas melhorias que poderiam ser consideradas neste trabalho são:
 ser mais estável que o Quicksort);
 \item Analisar o comportamento do programa para diferentes tamanhos de memória (variar o 
 número de itens a serem lidos e ordenados em memória inteira);
+\item A utilização de paralelismo de dados ou de tarefas poderia ser muito interessante na resolução desse problema uma vez que um grande se encontra no passo da ordenação interna.
 \end{itemize}
 
 \end{document}
