@@ -142,113 +142,112 @@ $temps[tempId] \longleftarrow$ vetor alocado com o tamanho de $tempId$\;
 \end{footnotesize}
 \end{algorithm}
 
-
+A quantidade máxima de valores a serem lidos a cada iteração na parte da geração
+dos temporários foi limitada para efeitos de simulação em $1024 * 1024$ números.
+Estes são salvos em um vetor e ordenados em memória interna utilizando o algoritmo
+\textit{Quicksort}.
 
 \section{Código}
 
 \subsection{Módulos}
 O programa foi separado em quatro módulos:
 \begin{itemize}
-\item \textbf{Grafo:} contém todas as operações executadas sobre a 
-estrutura de dados Grafo, que foi utilizada para armazenamento e cálculo
-das distâncias entre as cidades.
-\item \textbf{Entrada e Saída:} controla a leitura do arquivo de distâncias
-e a escrita do resultado do programa na saída padrão. Também faz a validação dos 
+\item \textbf{Entrada e Saída:} controla a leitura do arquivo de entrada
+e a escrita do resultado no arquivo de saída. Também faz a validação dos 
 argumentos de entrada pela linha de comando.
-\item \textbf{Geografia:} contém dados como nomes das cidades (para sua identificação
-e armazenamento de seu identificador único), descrição das regiões do brasil
-segundo as capitais de seus estados e algumas operações sobre esses dados geográficos.
+\item \textbf{Ordenação:} contém o método de ordenação em memória interna 
+(\textit{Quicksort} recursivo).
+\item \textbf{Externo:} contém o método de ordenação em memória externa. Utiliza
+o módulo Ordenação para ordenar os arquivos parciais.
 \item \textbf{Principal:} interagiu com todos os outros módulos retornando erro
-quando alguma irregularidade era colocada, controlou o fluxo de execução do
-programa.
+quando alguma irregularidade era detectada, controla o fluxo de execução do
+programa e mede o tempo de execução total do algoritmo.
 \end{itemize}
 
 \subsection{Entrada e saída}
+\subsubsection{Linha de comando}
 Para não haver problemas com a leitura da linha de comando, foi utilizado um utilitário do
 sistema Linux chamado \textbf{getopt} que permite uma leitura mais robusta dos argumentos
 passados ao programa. O comando para execução do programa definido para a linha de entrada 
 foi:
 \begin{verbatim}
-#: ./tp3 -a <A> -b <B> -c <C> -d <D> -e <E> -f <F> -g <G> 
+#: ./tp4 -i <I> -o <O>
 \end{verbatim}
 Sendo: 
 \begin{itemize}
-  \item \textbf{A} - Quantidade total de dias de viagem;
-  \item \textbf{B} - Cidade em que a viagem começa (e consequentemente aonde deve terminar);
-  \item \textbf{C} - Dinheiro disponível para o gasto com esta viagem;
-  \item \textbf{D} - Quantidade máxima de dias que um candidato pode ficar sem visitar alguma
-  região geográfica do Brasil.
-  \item \textbf{E} - Preço por Km para viajar de Carro;
-  \item \textbf{F} - Preço por Km para viajar de Avião; 
-  \item \textbf{G} - Algoritmo a ser exevutado: solução ótima (\textit{otima}) ou a 
-  heurística (\textit{heuristica}).
+  \item \textbf{I} - Arquivo de entrada;
+  \item \textbf{O} - Arquivo de saída;
 \end{itemize}
 
-% falar sobre o arquivo de distancias
-O arquivo de distâncias especifica a distância em Km entre cada uma das capitais brasileiras
-no seguinte formato:
+\subsubsection{Formato da entrada}
+Para gerar o arquivo de entrada foi utilizado o script disponibilizado pelos monitores que 
+gerava números em ponto flutuante com 15 casas de precisão. Os números devem ser positivos 
+(pela própria especificação do problema). Não há restrição quanto à  precisão do número (o 
+programa trata isso). Um exemplo de entrada válida seria:
 \begin{verbatim}
-...
-<A> <B> <C> <D>
-...
+180.00121515154
+0.459887321
+0.011115155511150
+40.3333
+40.3333
+0.00001000
 \end{verbatim}
-Sendo:
-\begin{itemize}
-  \item \textbf{A} - nome da cidade A;
-  \item \textbf{B} - nome da cidade B; 
-  \item \textbf{C} - distância rodoviária entre a cidade A a cidade B;
-  \item \textbf{D} - distância aérea entre a cidade A e a cidade B. 
-\end{itemize}
 
-% falar sobre o formato da saida
-A saída do programa é retornada na saída padrão do sistema no seguinte formato:
+\subsubsection{Formato da saída}
+A saída do programa é retornada no arquivo de saída especificado pela linha de comando.
+É formada por 2 colunas contendo na primeira os valores passados pela entrada, sem repetição
+e ordenados e na segunda o valor da CDF calculada para o número da mesma linha na primeira 
+coluna. O exemplo da saída gerada pela entrada descrita na sub-sessão anterior seria:
 \begin{verbatim}
-...
-<A> <B> <C>
-...
+0.000010    0.00000
+0.011115    0.00185
+0.459887    0.07665
+40.333300    6.72222
+180.001215    1.00000
 \end{verbatim}
-Sendo:
-\begin{itemize}
-  \item \textbf{A} - número do dia em que o candidato chegou à cidade;
-  \item \textbf{B} - nome da cidade em que o candidato chegou; 
-  \item \textbf{C} - meio de transporte utilizado pelo candidato para ir até a próxima cidade.
-\end{itemize}
+
+Além disso o programa imprime na saída padrão quais foram os tempos de execução, usuário e sistema
+gastos nessa execução:
+\begin{verbatim}
+tempo de execucao:  0.421001
+tempo de usuario: 0.260000
+tempo de sistema: 0.120000
+\end{verbatim}
+
+\subsubsection{Arquivos temporários e arquivo ordenado}
+Para fazer a intercalação, vários arquivos temporários são gerados (dependendo do tamanho do arquivo
+de entrada). Tais arquivos são nomeados com o prefixo \textit{"temp\_"} seguidos por um número inteiro
+sequencial começando de $1$.
+
+Além disso, ao intercalar os arquivos temporários é criado um arquivo de nome padrão (definido no código
+do programa como "ordenado") com o conteúdo do arquivo de entrada ordenado com uma precisão de 5 casas decimais.
+
+Todos os arquivos são gerados no diretório em que o executável se encontra.
 
 \subsection{Compilação}
 O compilador utilizado neste trabalho foi o GCC (adotado como padrão para a disciplina) e 
 o comando para compilar o programa através do GCC é:
 \begin{verbatim}
-  #: gcc -o tp3 tp3.c io.c io.h geografia.c geografia.h grafo.c grafo.h
+  #: gcc -o tp4 tp4.c io.c io.h externo.c externo.h ordena.c ordena.h
 \end{verbatim}
 caso estejam todos os arquivos dentro do mesmo diretório.
 
 Como pedido na especificação, foi feito um arquivo Makefile com o qual é possível compilar
 o programa com o comando: 
 \begin{verbatim}
-  #: make all
+  #: make main
 \end{verbatim}
 
 E podemos compilar e executar o programa com o comando:
 \begin{verbatim}
   #: make run
 \end{verbatim}
-que fará, além da compilação, com que o programa execute com uma entrada arbitrária.
+que fará, além da compilação, com que o programa execute com uma entrada pequena.
 
 \section{Avaliação Experimental}
 \label{avaliacao_experimental}
 
-O que pudemos avaliar experimentalmente com a execução do programa é que apesar de ter 
-encontrado bem as palavras-chave de cada texto (os termos considerados foram realmente 
-relevantes), o algoritmo para clusterizar os textos não foi tão eficiente assim.
 
-Aparentemente, textos com muitas palavras foram considerados muito mais que outros textos 
-menores. Esta falha provavelmente se encontra no algoritmo do cálculo do potencial de 
-semelhança entre os textos, descrito em alto-nível no algoritmo 2. Em uma próxima versão 
-será interessante normalizar matemáticamente essa contagem para evitar esse tipo de 
-discrepância de resultados.
-
-Como não fiz medições do tempo de execução do programa para diversas entradas, a avaliação
-da velocidade do programa para diferentes entradas será omitida.
 
 \section{Conclusão}
 \label{conclusao}
@@ -273,18 +272,10 @@ certo caráter discriminativo entre os textos analisados).
 
 Algumas melhorias que poderiam ser consideradas neste trabalho são:
 \begin{itemize}
-\item Um melhor tratamento dos textos de entrada (eliminando acentuação e outros 
-caracteres inválidos dentro do programa);
-\item Utilização de Stop Words, retirada de prefixo e sufixo e outros tipos de técnicas
-aplicadas em recuperação de informação com o objetivo de maximizarmos o aproveitamento dos
-termos contidos no índice;
-\item Uma melhor análise de complexidade de espaço e tempo de execução do programa, talvez
-a utilização de uma outra estrutura de dados para o índice seja mais eficiente em termos 
-de execução;
-\item Uma modelagem mais complexa da análise de frequência das ocorrências de termos 
-relevantes nos documentos analisados;
-\item Uma modelagem mais complexa do cálculo de similaridade entre os textos a partir de 
-suas/seus palavras-chave/tópicos.
+\item Testar o passo de ordenação interna com outros algoritmos (Heapsort por exemplo - por
+ser mais estável que o Quicksort);
+\item Analisar o comportamento do programa para diferentes tamanhos de memória (variar o 
+número de itens a serem lidos e ordenados em memória inteira);
 \end{itemize}
 
 \end{document}
