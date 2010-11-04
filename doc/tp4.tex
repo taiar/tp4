@@ -299,14 +299,29 @@ Os valores da tabela foram plotados na figura 1.
 \section{Conclusões}
 \label{conclusao}
 
+Neste trabalho foi desenvolvido e analisado um programa que faz a ordenação em memória 
+externa de arquivos com números em ponto flutuante. Foi utilizada a memória externa pois o arquivo
+geralmente é muito grande para ser ordenado em memória interna, o que torna a resolução do problema
+bem mais complexa. Além disso, o arquivo ordenado foi utilizado para calcular a função de probabilidade acumulada do conjunto dos números que foi passado na entrada.
 
+Ao analisar os tempos de execução e visualizar seu comportamento no gráfico, percebemos que variando
+o tamanho da entrada o tempo de execução para todas as métricas cresce linearmente. Isso acontece pois
+ todos os algoritmos no programa exceto o de ordenação interna têm ordem de complexidade linear (geralmente se resumem a ler arquivos e vetores apenas 1 vez). 
+ 
+Já o algoritmo de ordenação interna que neste caso tem ordem de complexidade $O(n*(log(n)))$ não sofre
+ com o aumento da entrada pois todos os vetores que ele ordena têm o mesmo tamanho tornando o seu tempo de execução uma constante no programa, variando linearmente com a entrada.
+ 
+Dessa forma concluímos que a ordenação externa, apesar de lenta se comparada aos algoritmos de ordenação 
+em memória interna são extremamente importantes e muito utilizados na prática, em cenários que o tamanho
+ dos dados é um fator decisivo. Seu caráter de execução linear mostra que o algoritmo é robusto o
+ suficiente para ordenar arquivos bem grandes sem se tornar uma operação inviável (fiz experimentos com arquivos de 20gb que, apesar da demora foram ordenados corretamente).
 
-Algumas melhorias que poderiam ser consideradas neste trabalho são:
+Por falta de tempo para implementar deixo aqui algumas idéias que fariam análises mais interessantes sobre o assunto e tornaria este trabalho mais proveitoso:
 \begin{itemize}
 \item Testar o passo de ordenação interna com outros algoritmos (Heapsort por exemplo - por
-ser mais estável que o Quicksort);
+ser mais estável que o Quicksort). Tal alternativa começou a ser implementada mas teve de ser deixada de lado visto o tempo de entrega do trabalho (vide o módulo \textbf{Ordenação} do programa);
 \item Analisar o comportamento do programa para diferentes tamanhos de memória (variar o 
-número de itens a serem lidos e ordenados em memória inteira);
+número de itens a serem lidos e ordenados em memória interna);
 \item A utilização de paralelismo de dados ou de tarefas poderia ser muito interessante na resolução desse problema uma vez que um grande se encontra no passo da ordenação interna.
 \end{itemize}
 
